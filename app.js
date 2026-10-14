@@ -56,7 +56,8 @@ const I18N = {
         arch_4_desc: 'จัดการ Optimize ระบบและแมพโดย Co-Owner เพื่อลดอาการแลค ลดการใช้ Memory และทำให้ผู้เล่นทุกอุปกรณ์เล่นได้เฟรมเรตสูงสุด',
         video_heading_prefix: 'ผลงานวิดีโอ & ระบบเกม',
         video_subheading: 'รวบรวมผลงานระบบสคริปต์ (Scripting), การออกแบบ UI & Animation, เอฟเฟกต์สกิล VFX, การปั้น 3D Model และการสร้างแมพจากทีมพัฒนา DARKSHADOW STUDIO',
-        video_fps_badge: 'ระบบเรนเดอร์ 60FPS Real-Time Interactive',
+        videos_empty_title: 'ยังไม่มีคลิปวิดีโอในคลังผลงานขณะนี้ รอการอัปโหลดคลิปเร็ว ๆ นี้',
+        video_media_missing: 'ยังไม่มีไฟล์คลิปวิดีโอสำหรับรายการนี้',
         vid_cat_all: 'ผลงานทั้งหมด (All Reels)',
         vid_cat_script: 'ระบบสคริปต์ (Scripting & Combat)',
         vid_cat_uivfx: 'UI, Animation & VFX (Owner)',
@@ -76,7 +77,6 @@ const I18N = {
         theme_glow_label: 'แสงเรืองรอง:',
         theme_reset_btn: 'คืนค่าเป็นธีมเริ่มต้น (Crimson Shadow)',
         theme_save_close: 'บันทึกและปิดหน้าต่าง',
-        modal_interactive_hint: 'แตะหรือเลื่อนเมาส์บนหน้าจอเพื่อโต้ตอบกับเอฟเฟกต์',
         modal_close_btn: 'ปิดหน้าต่างแสดงผลงาน',
         status_online: '● ออนไลน์ (Online)',
         status_idle: '● ไม่อยู่ (Idle)',
@@ -138,7 +138,8 @@ const I18N = {
         arch_4_desc: 'Engineered by the Co-Owner to minimize memory usage, eliminate lag spikes, and guarantee high FPS across all devices.',
         video_heading_prefix: 'Video Showreel & Game Systems',
         video_subheading: 'Explore our collection of Luau Scripting systems, UI & Animation reels, custom VFX particles, 3D Models, and Map Builds from DARKSHADOW STUDIO.',
-        video_fps_badge: '60FPS Real-Time Interactive Render',
+        videos_empty_title: 'No showcase reels published yet — clips are coming soon.',
+        video_media_missing: 'No clip file available for this reel yet.',
         vid_cat_all: 'All Showreels',
         vid_cat_script: 'Scripting & Combat',
         vid_cat_uivfx: 'UI, Animation & VFX (Owner)',
@@ -158,7 +159,6 @@ const I18N = {
         theme_glow_label: 'Glow Intensity:',
         theme_reset_btn: 'Reset to Default (Crimson Shadow)',
         theme_save_close: 'Save & Close',
-        modal_interactive_hint: 'Tap or move cursor on screen to interact with live effects',
         modal_close_btn: 'Close Showcase Player',
         status_online: '● Online',
         status_idle: '● Idle',
@@ -325,7 +325,6 @@ const state = {
     lang: 'th',
     soundEnabled: true,
     videoCategory: 'all',
-    activeModalVideoId: null,
     theme: {
         mode: 'dark',
         presetId: 'crimson',
@@ -360,64 +359,9 @@ const state = {
         discordUrl: 'https://discord.com/users/789027937633959936',
         robloxUrl: 'https://www.roblox.com/th/users/732463046/profile'
     },
-    sampleVideos: [
-        {
-            id: 'vid_vfx_combat',
-            category: 'uivfx',
-            categoryLabel: 'UI / ANIMATION / VFX',
-            role: 'OWNER • AyatoFixed',
-            title: 'Ultimate Skill VFX & Combat Animation Reel',
-            desc: 'ผลงานการออกแบบเอฟเฟกต์สกิลระเบิดพลัง (Particle VFX) ผสานท่วงท่าอนิเมชันโจมตีต่อเนื่องแบบ 60FPS และหน้าต่างสถานะสกิล',
-            descEn: 'Custom high-energy skill Particle VFX combined with fluid 60FPS combat keyframe animations and responsive skill HUD.',
-            duration: '01:15',
-            views: '4.8K Views',
-            simType: 'vfx_slash',
-            videoUrl: '',
-            tags: ['VFX Particles', 'Keyframe Animation', 'Camera Shake']
-        },
-        {
-            id: 'vid_luau_system',
-            category: 'scripting',
-            categoryLabel: 'LUAU SCRIPTING & COMBAT',
-            role: 'OWNER & CO-OWNER',
-            title: 'Modular Combat System & Anti-Exploit Hitbox',
-            desc: 'ระบบเขียนสคริปต์ Luau โครงสร้าง Combat Hitbox ที่แม่นยำ ซิงก์ข้อมูล Server-Client ไร้ดีเลย์ พร้อมระบบป้องกันช่องโหว่',
-            descEn: 'Modular Luau combat hitbox framework with zero-latency Server-Client replication and server-authoritative anti-exploit validation.',
-            duration: '01:42',
-            views: '6.2K Views',
-            simType: 'script_matrix',
-            videoUrl: '',
-            tags: ['Luau Scripting', 'Server Hitbox', 'DataStore Sync']
-        },
-        {
-            id: 'vid_ui_hud',
-            category: 'uivfx',
-            categoryLabel: 'DYNAMIC UI & TWEEN',
-            role: 'OWNER • AyatoFixed',
-            title: 'Next-Gen Animated Inventory & Shop UI',
-            desc: 'ระบบ UI อินเทอร์เฟซกระเป๋าไอเทมและร้านค้า มาพร้อม Spring Tween Animation ลื่นไหลและเอฟเฟกต์เสียงตอบสนองครบชุด',
-            descEn: 'Modern inventory and shop interface powered by smooth Spring Tween animations and tactile sound feedback.',
-            duration: '00:58',
-            views: '3.9K Views',
-            simType: 'ui_interface',
-            videoUrl: '',
-            tags: ['UI Design', 'TweenService', 'Responsive HUD']
-        },
-        {
-            id: 'vid_3d_map_opt',
-            category: 'modelmap',
-            categoryLabel: '3D MODEL / MAP / OPTIMIZE',
-            role: 'CO-OWNER • piyth001',
-            title: '3D Weapon Modeling, Map Build & 120FPS Optimization',
-            desc: 'ผลงานปั้นโมเดล 3D การจัดวางสภาพแวดล้อม Build Map ขนาดใหญ่ และการทำ System Optimization ลด Memory ให้เล่นลื่นทุกอุปกรณ์',
-            descEn: 'Custom 3D weapon modeling, large-scale Roblox map architecture, and memory/draw-call optimization for smooth 120FPS gameplay.',
-            duration: '02:10',
-            views: '5.4K Views',
-            simType: 'map_wireframe',
-            videoUrl: '',
-            tags: ['3D Modeling', 'Build Map', 'FPS Optimization']
-        }
-    ],
+    // คลิปผลงานจะถูกเพิ่มในอาร์เรย์นี้เมื่ออัปโหลดวิดีโอจริงแล้ว
+    // รูปแบบ: { id, category, categoryLabel, role, title, desc, descEn, duration, views, thumb, videoUrl, tags }
+    sampleVideos: [],
     studioMaps: []
 };
 
@@ -1216,6 +1160,30 @@ function renderVideoShowcase(isCategorySwitch = false) {
     const grid = document.getElementById('videoShowcaseGrid');
     if (!grid) return;
 
+    const categoryBar = document.getElementById('videoCategoryBar');
+
+    if (!state.sampleVideos.length) {
+        if (categoryBar) {
+            categoryBar.classList.add('hidden');
+            categoryBar.classList.remove('flex');
+        }
+        grid.innerHTML = `
+            <div class="scroll-card-3d col-span-full min-h-[220px] sm:min-h-[260px] rounded-3xl bg-[#0d070a]/60 border border-dashed border-red-500/20 flex flex-col items-center justify-center p-8 sm:p-10 text-center">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-slate-500 text-lg sm:text-xl mb-3">
+                    <i class="fa-solid fa-circle-play"></i>
+                </div>
+                <p class="text-xs sm:text-sm font-medium text-slate-400">${t('videos_empty_title')}</p>
+                <span class="text-[11px] sm:text-xs text-slate-600 mt-1">COMING SOON</span>
+            </div>
+        `;
+        return;
+    }
+
+    if (categoryBar) {
+        categoryBar.classList.remove('hidden');
+        categoryBar.classList.add('flex');
+    }
+
     const filtered = state.videoCategory === 'all'
         ? state.sampleVideos
         : state.sampleVideos.filter(v => v.category === state.videoCategory);
@@ -1231,8 +1199,10 @@ function renderVideoShowcase(isCategorySwitch = false) {
                  onmouseenter="playHoverSound()"
                  class="${animClass} group cursor-pointer bg-[#0d070a]/95 border border-red-500/25 hover:border-red-500/60 rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 shadow-xl">
                 <div>
-                    <div class="h-44 w-full relative overflow-hidden bg-[#060306]">
-                        <canvas data-thumb-sim="${vid.simType || 'vfx_slash'}" class="video-thumb-canvas w-full h-full block opacity-85 group-hover:scale-105 transition-transform duration-500"></canvas>
+                    <div class="h-44 w-full relative overflow-hidden bg-[#060306] flex items-center justify-center">
+                        ${vid.thumb
+                            ? `<img src="${vid.thumb}" alt="${vid.title}" class="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-500">`
+                            : `<i class="fa-solid fa-film text-slate-700 text-3xl"></i>`}
                         <div class="absolute inset-0 bg-gradient-to-t from-[#0d070a] via-black/20 to-transparent"></div>
 
                         <div class="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
@@ -1278,124 +1248,7 @@ function renderVideoShowcase(isCategorySwitch = false) {
             </div>
         `;
     }).join('');
-
-    initVideoThumbnailCanvases();
 }
-
-let thumbAnimFrame = null;
-function initVideoThumbnailCanvases() {
-    if (thumbAnimFrame) cancelAnimationFrame(thumbAnimFrame);
-    const canvases = Array.from(document.querySelectorAll('.video-thumb-canvas'));
-    if (!canvases.length) return;
-
-    canvases.forEach(c => {
-        c.width = 320;
-        c.height = 176;
-    });
-
-    let tick = 0;
-    function renderThumbs() {
-        tick += 0.04;
-        const primary = state.theme.primary || '#ff1744';
-        const accent = state.theme.accent || '#ff6b81';
-
-        canvases.forEach((canvas, idx) => {
-            const ctx = canvas.getContext('2d');
-            const sim = canvas.getAttribute('data-thumb-sim');
-            const w = canvas.width;
-            const h = canvas.height;
-
-            ctx.fillStyle = '#070408';
-            ctx.fillRect(0, 0, w, h);
-
-            ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-            ctx.lineWidth = 1;
-            for (let x = 0; x < w; x += 24) {
-                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
-            }
-            for (let y = 0; y < h; y += 24) {
-                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-            }
-
-            if (sim === 'vfx_slash') {
-                for (let i = 0; i < 3; i++) {
-                    ctx.save();
-                    ctx.translate(w / 2, h / 2);
-                    ctx.rotate(tick * (1.2 + i * 0.3) + i * 2);
-                    ctx.beginPath();
-                    ctx.arc(0, 0, 34 + i * 14, 0, Math.PI * 1.15);
-                    ctx.strokeStyle = i % 2 === 0 ? primary : accent;
-                    ctx.lineWidth = 3.5 - i * 0.8;
-                    ctx.shadowBlur = 12;
-                    ctx.shadowColor = primary;
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            } else if (sim === 'script_matrix') {
-                for (let i = 0; i < 6; i++) {
-                    const barW = 50 + Math.sin(tick * 2 + i) * 35;
-                    ctx.fillStyle = i % 2 === 0 ? primary : 'rgba(255,255,255,0.22)';
-                    ctx.fillRect(22, 28 + i * 20, barW, 6);
-                }
-                ctx.save();
-                ctx.translate(w * 0.72, h * 0.5);
-                ctx.strokeStyle = accent;
-                ctx.lineWidth = 2;
-                ctx.strokeRect(-26, -26, 52, 52);
-                ctx.beginPath();
-                ctx.arc(0, 0, 16 + Math.sin(tick * 3) * 5, 0, Math.PI * 2);
-                ctx.strokeStyle = primary;
-                ctx.stroke();
-                ctx.restore();
-            } else if (sim === 'ui_interface') {
-                for (let i = 0; i < 3; i++) {
-                    const offsetY = Math.sin(tick * 2 + i) * 6;
-                    const x = 42 + i * 82;
-                    const y = 48 + offsetY;
-                    ctx.fillStyle = 'rgba(255,255,255,0.06)';
-                    ctx.strokeStyle = i === 1 ? primary : 'rgba(255,255,255,0.18)';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.roundRect(x, y, 68, 80, 10);
-                    ctx.fill();
-                    ctx.stroke();
-                }
-            } else {
-                ctx.save();
-                ctx.translate(w / 2, h / 2);
-                const s = 34;
-                const angle = tick * 0.8 + idx;
-                const pts = [
-                    [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
-                    [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
-                ].map(([x, y, z]) => {
-                    const rx = x * Math.cos(angle) - z * Math.sin(angle);
-                    const rz = x * Math.sin(angle) + z * Math.cos(angle);
-                    const ry = y * Math.cos(0.4) - rz * Math.sin(0.4);
-                    return [rx * s, ry * s];
-                });
-                const edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
-                ctx.strokeStyle = primary;
-                ctx.lineWidth = 2;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = primary;
-                edges.forEach(([a, b]) => {
-                    ctx.beginPath();
-                    ctx.moveTo(pts[a][0], pts[a][1]);
-                    ctx.lineTo(pts[b][0], pts[b][1]);
-                    ctx.stroke();
-                });
-                ctx.restore();
-            }
-        });
-
-        thumbAnimFrame = requestAnimationFrame(renderThumbs);
-    }
-    renderThumbs();
-}
-
-let modalSimFrame = null;
-let modalPointer = { x: 400, y: 225, burst: 0 };
 
 function extractYouTubeEmbed(url) {
     if (!url) return null;
@@ -1408,7 +1261,6 @@ function openVideoPlayerModal(videoId) {
     const vid = state.sampleVideos.find(v => v.id === videoId);
     if (!vid) return;
 
-    state.activeModalVideoId = videoId;
     playClickSound();
 
     const localizedDesc = state.lang === 'en' && vid.descEn ? vid.descEn : vid.desc;
@@ -1427,123 +1279,26 @@ function openVideoPlayerModal(videoId) {
     modal.classList.add('flex');
 
     const customContainer = document.getElementById('modalCustomMediaContainer');
-    const demoCanvas = document.getElementById('modalDemoCanvas');
-    const canvasHud = document.getElementById('modalCanvasHud');
-
     const rawUrl = (vid.videoUrl || '').trim();
     const ytEmbed = extractYouTubeEmbed(rawUrl);
 
+    customContainer.classList.remove('hidden');
+
     if (ytEmbed) {
-        if (modalSimFrame) cancelAnimationFrame(modalSimFrame);
-        demoCanvas.classList.add('hidden');
-        canvasHud.classList.add('hidden');
-        customContainer.classList.remove('hidden');
         customContainer.innerHTML = `<iframe src="${ytEmbed}" class="w-full h-full border-0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
     } else if (rawUrl) {
-        if (modalSimFrame) cancelAnimationFrame(modalSimFrame);
-        demoCanvas.classList.add('hidden');
-        canvasHud.classList.add('hidden');
-        customContainer.classList.remove('hidden');
         customContainer.innerHTML = `<video src="${rawUrl}" controls autoplay loop class="w-full h-full object-contain bg-black"></video>`;
     } else {
-        customContainer.innerHTML = '';
-        customContainer.classList.add('hidden');
-        demoCanvas.classList.remove('hidden');
-        canvasHud.classList.remove('hidden');
-        startModalInteractiveCanvas(vid.simType || 'vfx_slash');
+        customContainer.innerHTML = `
+            <div class="w-full h-full flex flex-col items-center justify-center gap-2 text-center p-6">
+                <i class="fa-solid fa-film text-slate-600 text-2xl"></i>
+                <p class="text-xs sm:text-sm text-slate-400">${t('video_media_missing')}</p>
+            </div>
+        `;
     }
-}
-
-function startModalInteractiveCanvas(simType) {
-    if (modalSimFrame) cancelAnimationFrame(modalSimFrame);
-    const canvas = document.getElementById('modalDemoCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    canvas.width = 800;
-    canvas.height = 450;
-
-    modalPointer = { x: canvas.width / 2, y: canvas.height / 2, burst: 1 };
-    const sparks = Array.from({ length: 45 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 3,
-        vy: (Math.random() - 0.5) * 3,
-        r: Math.random() * 3 + 1
-    }));
-
-    canvas.onmousemove = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        modalPointer.x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-        modalPointer.y = ((e.clientY - rect.top) / rect.height) * canvas.height;
-    };
-    canvas.ontouchmove = (e) => {
-        if (!e.touches[0]) return;
-        const rect = canvas.getBoundingClientRect();
-        modalPointer.x = ((e.touches[0].clientX - rect.left) / rect.width) * canvas.width;
-        modalPointer.y = ((e.touches[0].clientY - rect.top) / rect.height) * canvas.height;
-    };
-    canvas.onclick = () => {
-        modalPointer.burst = 2.4;
-        playClickSound();
-    };
-
-    let t = 0;
-    function renderStage() {
-        t += 0.045;
-        modalPointer.burst = Math.max(1, modalPointer.burst * 0.94);
-        const primary = state.theme.primary || '#ff1744';
-        const accent = state.theme.accent || '#ff6b81';
-
-        ctx.fillStyle = 'rgba(6, 3, 7, 0.32)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-        ctx.lineWidth = 1;
-        for (let x = 0; x < canvas.width; x += 40) {
-            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-        }
-        for (let y = 0; y < canvas.height; y += 40) {
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-        }
-
-        sparks.forEach((sp, i) => {
-            sp.x += sp.vx * modalPointer.burst;
-            sp.y += sp.vy * modalPointer.burst;
-            if (sp.x < 0 || sp.x > canvas.width) sp.vx *= -1;
-            if (sp.y < 0 || sp.y > canvas.height) sp.vy *= -1;
-
-            ctx.beginPath();
-            ctx.arc(sp.x, sp.y, sp.r, 0, Math.PI * 2);
-            ctx.fillStyle = i % 2 === 0 ? primary : accent;
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = primary;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-        });
-
-        ctx.save();
-        ctx.translate(modalPointer.x, modalPointer.y);
-        for (let ring = 0; ring < 4; ring++) {
-            ctx.save();
-            ctx.rotate(t * (ring % 2 === 0 ? 1.4 : -1.1) + ring);
-            ctx.beginPath();
-            ctx.arc(0, 0, (48 + ring * 26) * modalPointer.burst, 0, Math.PI * 1.35);
-            ctx.strokeStyle = ring % 2 === 0 ? primary : accent;
-            ctx.lineWidth = 4 - ring * 0.6;
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = primary;
-            ctx.stroke();
-            ctx.restore();
-        }
-        ctx.restore();
-
-        modalSimFrame = requestAnimationFrame(renderStage);
-    }
-    renderStage();
 }
 
 function closeVideoPlayerModal() {
-    if (modalSimFrame) cancelAnimationFrame(modalSimFrame);
     const customContainer = document.getElementById('modalCustomMediaContainer');
     if (customContainer) customContainer.innerHTML = '';
     const modal = document.getElementById('videoPlayerModal');
