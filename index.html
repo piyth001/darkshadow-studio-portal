@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>DARKSHADOW STUDIO | Discord & Roblox Developer Portal</title>
+    <!-- Google Fonts: Kanit & Space Grotesk & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Keep this sheet last. The icon font ships its own base typography rule and the
+         utilities below it must be able to override that rule. -->
+    <link rel="stylesheet" href="./styles.css">
+    <style id="dynamicThemeOverrides"></style>
+</head>
+<body class="relative min-h-screen">
+
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+    <div class="cursor-spotlight"></div>
+    <div class="fixed inset-0 cyber-grid pointer-events-none z-0"></div>
+
+    <!-- Top Aurora Glow when scrolling UP -->
+    <div id="scrollUpAurora" class="scroll-up-aurora"></div>
+
+    <!-- Warp Overlay when gliding to top -->
+    <div id="scrollTopWarpOverlay" class="scroll-top-warp-overlay"></div>
+
+    <!-- Toast Container (Responsive on Mobile & Desktop) -->
+    <div id="toastContainer" class="fixed bottom-20 left-4 right-4 sm:left-auto sm:bottom-6 sm:right-24 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+    <!-- Top Dark-Red RGB Laser Bar -->
+    <div class="fixed top-0 left-0 right-0 h-1 z-50 rgb-laser-bar"></div>
+
+    <!-- Top Navigation Bar -->
+    <header id="mainNavbar" class="sticky top-0 z-40 backdrop-blur-xl bg-[#050305]/90 border-b border-red-500/15 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
+            <!-- Brand Logo -->
+            <a href="#top" onclick="smoothScrollToSection(event, 'top')" class="flex items-center gap-2.5 sm:gap-3.5 group min-w-0 shrink">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl rgb-avatar-ring p-[2px] sm:p-[2.5px] theme-avatar-glow group-hover:scale-110 transition-transform shrink-0">
+                    <div class="w-full h-full bg-[#070306] rounded-[13px] sm:rounded-[14px] flex items-center justify-center">
+                        <i class="fa-solid fa-skull-crossbones rgb-text text-base sm:text-xl"></i>
+                    </div>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                        <span class="font-display font-extrabold text-sm sm:text-xl tracking-wider sm:tracking-widest rgb-text truncate">DARKSHADOW</span>
+                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-1.5 sm:px-2.5 py-0.5 rounded-full bg-red-600/20 text-red-300 border border-red-500/40 shadow-sm shrink-0">STUDIO</span>
+                    </div>
+                    <p id="navSubtitle" class="text-[10px] sm:text-[11px] text-slate-400 tracking-wide truncate hidden xs:block sm:block">Discord & Roblox Developer Portal</p>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Pills -->
+            <nav class="hidden md:flex items-center gap-1 bg-white/[0.04] border border-white/10 rounded-full px-2 py-1.5 shrink-0">
+                <a href="#founders" onclick="smoothScrollToSection(event, 'founders')" data-nav-section="founders" class="nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-white bg-red-600/20 border border-red-500/30 transition-all">
+                    <i class="fa-solid fa-crown text-amber-400 mr-1.5 text-xs"></i><span data-i18n="nav_founders">ผู้ก่อตั้ง</span>
+                </a>
+                <a href="#about" onclick="smoothScrollToSection(event, 'about')" data-nav-section="about" class="nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+                    <i class="fa-solid fa-layer-group text-red-400 mr-1.5 text-xs"></i><span data-i18n="nav_systems">ระบบงาน</span>
+                </a>
+                <a href="#video-showcase" onclick="smoothScrollToSection(event, 'video-showcase')" data-nav-section="video-showcase" class="nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+                    <i class="fa-solid fa-circle-play text-red-400 mr-1.5 text-xs"></i><span data-i18n="nav_videos">ผลงานวิดีโอ</span>
+                </a>
+                <a href="#maps-showcase" onclick="smoothScrollToSection(event, 'maps-showcase')" data-nav-section="maps-showcase" class="nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+                    <i class="fa-solid fa-gamepad text-rose-400 mr-1.5 text-xs"></i><span data-i18n="nav_maps">คลังแมพ Roblox</span>
+                </a>
+            </nav>
+
+            <!-- Top-Right Action Controls (Discord + Theme + Sound + TH/EN Language Switcher) -->
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <!-- ปุ่มเข้าร่วมกลุ่ม Discord ผูกกับ https://discord.gg/mzp9pmEkp -->
+                <a id="navDiscordServerLink"
+                   href="https://discord.gg/mzp9pmEkp"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   onmouseenter="playHoverSound()"
+                   title="เข้าร่วมกลุ่ม Discord ของ DARKSHADOW STUDIO"
+                   class="btn-shimmer group flex items-center gap-2 px-2 sm:pl-2 sm:pr-3.5 py-1.5 rounded-xl bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/40 hover:border-[#5865F2] text-xs font-bold text-indigo-200 hover:text-white shadow-lg shadow-indigo-500/10 hover:shadow-indigo-500/35 transition-all duration-200 active:scale-95">
+                    <span class="w-7 h-7 rounded-lg bg-[#5865F2] group-hover:bg-white/20 text-white flex items-center justify-center shadow-sm transition-colors shrink-0">
+                        <i class="fa-brands fa-discord text-sm"></i>
+                    </span>
+                    <span data-i18n="join_discord" class="hidden lg:inline">เข้ากลุ่ม Discord</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform hidden lg:inline"></i>
+                </a>
+
+                <!-- ปุ่มสลับโหมด DARK / LIGHT สุดเท่ -->
+                <button id="quickModeToggleBtn"
+                        onclick="toggleColorMode()"
+                        onmouseenter="playHoverSound()"
+                        type="button"
+                        title="สลับโหมดมืด / โหมดสว่าง (Dark / Light Mode)"
+                        class="btn-shimmer group flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/15 text-xs font-bold text-white transition-all active:scale-95 shadow-sm shrink-0">
+                    <i id="modeToggleIcon" class="fa-solid fa-moon text-amber-400 text-xs sm:text-sm transition-transform duration-500 group-hover:rotate-12"></i>
+                    <span id="modeToggleLabel" class="hidden xl:inline text-[11px] font-extrabold tracking-wider uppercase">DARK</span>
+                </button>
+
+                <!-- ปุ่มเปลี่ยนธีมสีเว็บ -->
+                <button onclick="openThemeModal()" title="เลือกธีมสีหน้าเว็บ / Choose Theme" class="btn-shimmer flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/15 text-xs font-semibold text-white transition-all active:scale-95 shadow-sm">
+                    <span id="activeThemeDot" class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shrink-0 shadow-sm" style="background: var(--theme-primary); box-shadow: 0 0 10px var(--theme-primary);"></span>
+                    <i class="fa-solid fa-palette rgb-text text-xs sm:text-sm"></i>
+                    <span id="activeThemeName" data-i18n="theme_btn" class="hidden xl:inline font-bold">ธีมสีเว็บ</span>
+                </button>
+
+                <!-- ปุ่มเปิด/ปิดเสียงเอฟเฟกต์ -->
+                <button onclick="toggleSoundFx()" title="เปิด/ปิด เสียงเอฟเฟกต์ UI" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all shrink-0">
+                    <i id="soundIcon" class="fa-solid fa-volume-high text-red-400 text-xs sm:text-sm"></i>
+                </button>
+
+                <!-- ปุ่มสลับภาษา TH / EN ข้างบนขวามือ -->
+                <div class="flex items-center bg-[#12080c] border border-white/15 rounded-xl p-0.5 shadow-inner shrink-0" role="group" aria-label="Language Switcher">
+                    <button id="langBtnTH"
+                            onclick="setLanguage('th')"
+                            type="button"
+                            title="ภาษาไทย (Thai)"
+                            class="lang-switch-btn lang-active px-2 sm:px-2.5 py-1.5 rounded-[9px] text-[11px] sm:text-xs font-extrabold tracking-wider leading-none">
+                        TH
+                    </button>
+                    <button id="langBtnEN"
+                            onclick="setLanguage('en')"
+                            type="button"
+                            title="English (อังกฤษ)"
+                            class="lang-switch-btn px-2 sm:px-2.5 py-1.5 rounded-[9px] text-[11px] sm:text-xs font-extrabold tracking-wider leading-none text-slate-400 hover:text-white">
+                        EN
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Quick Navigation Bar (Shown on Mobile Screens < 768px) -->
+        <div class="md:hidden border-t border-white/10 bg-[#070306]/95 px-3 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <a href="#founders" onclick="smoothScrollToSection(event, 'founders')" data-nav-section="founders" class="nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-white bg-red-600/20 border border-red-500/30 transition-all flex items-center gap-1">
+                <i class="fa-solid fa-crown text-amber-400 text-[10px]"></i><span data-i18n="nav_founders">ผู้ก่อตั้ง</span>
+            </a>
+            <a href="#about" onclick="smoothScrollToSection(event, 'about')" data-nav-section="about" class="nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1">
+                <i class="fa-solid fa-layer-group text-red-400 text-[10px]"></i><span data-i18n="nav_systems">ระบบงาน</span>
+            </a>
+            <a href="#video-showcase" onclick="smoothScrollToSection(event, 'video-showcase')" data-nav-section="video-showcase" class="nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1">
+                <i class="fa-solid fa-circle-play text-red-400 text-[10px]"></i><span data-i18n="nav_videos">ผลงานวิดีโอ</span>
+            </a>
+            <a href="#maps-showcase" onclick="smoothScrollToSection(event, 'maps-showcase')" data-nav-section="maps-showcase" class="nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1">
+                <i class="fa-solid fa-gamepad text-rose-400 text-[10px]"></i><span data-i18n="nav_maps">คลังแมพ Roblox</span>
+            </a>
+        </div>
+
+        <!-- Dynamic Scroll Progress Bar -->
+        <div class="w-full h-[3px] bg-white/5 relative overflow-hidden">
+            <div id="scrollProgressBar" class="h-full w-0 rgb-laser-bar transition-all duration-100"></div>
+        </div>
+    </header>
+
+    <!-- Floating Scroll HUD Status Pill (Desktop) -->
+    <div id="scrollHudBadge" class="fixed bottom-24 right-6 z-40 hidden sm:flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-[#090508]/90 border border-white/15 backdrop-blur-xl shadow-2xl text-xs pointer-events-none opacity-0 translate-y-3 transition-all duration-300">
+        <i id="scrollDirectionIcon" class="fa-solid fa-arrow-down text-[10px] text-red-400 transition-transform duration-300"></i>
+        <span id="scrollHudSectionName" class="text-slate-300 font-medium">กำลังดู: ผู้ก่อตั้ง</span>
+        <span id="scrollHudPercent" class="font-mono font-bold rgb-text pl-1.5 border-l border-white/10">0%</span>
+    </div>
+
+    <!-- Floating Ultra-Smooth Scroll-to-Top Button (Bottom Right - Mobile & Desktop Friendly) -->
+    <button id="scrollToTopBtn"
+            onclick="smoothGlideToTop()"
+            onmouseenter="playHoverSound()"
+            title="เลื่อนกลับขึ้นบนสุดแบบนุ่มนวล / Scroll to Top"
+            class="btn-hidden fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 group flex items-center gap-2 p-1.5 sm:pr-4 rounded-2xl bg-[#0b0609]/95 hover:bg-[#160a12] border border-red-500/35 backdrop-blur-xl shadow-2xl">
+        <!-- SVG Progress Ring + Animated Arrow -->
+        <div class="relative w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
+            <svg class="w-10 h-10 sm:w-11 sm:h-11 -rotate-90 transform" viewBox="0 0 44 44">
+                <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"></circle>
+                <circle id="scrollTopRingCircle"
+                        cx="22" cy="22" r="18"
+                        fill="none"
+                        stroke="url(#scrollRingGrad)"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-dasharray="113.1"
+                        stroke-dashoffset="113.1"
+                        class="transition-all duration-150"></circle>
+                <defs>
+                    <linearGradient id="scrollRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="var(--theme-primary)" />
+                        <stop offset="100%" stop-color="var(--theme-accent)" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <div class="absolute inset-1.5 rounded-xl rgb-avatar-ring flex items-center justify-center text-white shadow-md">
+                <i class="rocket-icon fa-solid fa-angles-up text-xs sm:text-sm transition-transform duration-300"></i>
+            </div>
+        </div>
+        <div class="text-left hidden sm:block">
+            <div class="text-[9px] font-mono uppercase tracking-widest text-slate-400 leading-none">SMOOTH GLIDE</div>
+            <div data-i18n="scroll_top_btn" class="text-xs font-bold rgb-text leading-tight mt-0.5">เลื่อนขึ้นบนสุด</div>
+        </div>
+    </button>
+
+    <main id="top" class="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-24">
+
+        <!-- Hero Intro Section -->
+        <section id="founders" class="pt-2 pb-12 sm:pb-16 scroll-momentum-section">
+            <div class="text-center max-w-4xl mx-auto mb-8 sm:mb-12 reveal-item px-1">
+                <div class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full rgb-badge-border text-[11px] sm:text-xs font-medium text-slate-200 mb-5 sm:mb-6 animate-float shadow-lg max-w-full">
+                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-500 animate-ping shrink-0"></span>
+                    <span class="truncate"><span data-i18n="hero_badge_prefix">พอร์ทัลผู้บริหาร</span> <strong class="text-red-400">Discord</strong> & <strong class="text-rose-400">Roblox</strong> • <strong id="heroThemeBadgeText" class="rgb-text uppercase">DARKSHADOW CRIMSON SHADOW</strong></span>
+                </div>
+                <h1 class="font-display text-3xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-none mb-4 sm:mb-5">
+                    <span class="rgb-text theme-title-glow">DARKSHADOW</span>
+                    <span class="block sm:inline text-white mt-1 sm:mt-0">STUDIO</span>
+                </h1>
+                <p id="heroSubtitleText" class="text-slate-400 text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto px-2">
+                    ศูนย์บัญชาการของ <span class="text-white font-semibold">Owner</span> และ <span class="text-white font-semibold">Co-Owner</span> พร้อมระบบดึงข้อมูลโปรไฟล์จริงจาก <span class="text-indigo-400 font-medium">Discord</span> & <span class="text-rose-400 font-medium">Roblox</span> อัตโนมัติ
+                </p>
+            </div>
+
+            <!-- EQUAL LEVEL DUAL GRID: Owner & Co-Owner sit side-by-side -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 items-stretch">
+
+                <!-- ==================== CARD 1: OWNER (1375103992358768730) ==================== -->
+                <div style="--stagger-delay: 0ms;" class="scroll-card-3d tilt-card founder-glow-owner rounded-[1.5rem] h-full flex flex-col" data-tilt>
+                    <div class="bg-[#080407]/95 backdrop-blur-2xl border border-red-500/25 rounded-[1.5rem] overflow-hidden flex flex-col justify-between h-full shadow-2xl">
+                        
+                        <div>
+                            <!-- Banner -->
+                            <div id="ownerBannerBox" class="h-32 sm:h-40 w-full relative overflow-hidden bg-cover bg-center">
+                                <div class="absolute inset-0 opacity-40 rgb-laser-bar mix-blend-overlay"></div>
+                                <div class="absolute inset-0 opacity-30 theme-dot-pattern"></div>
+                                <div class="absolute -right-10 -top-10 w-44 h-44 theme-orb-primary rounded-full blur-2xl"></div>
+                                <div class="absolute left-1/3 -bottom-12 w-40 h-40 theme-orb-secondary rounded-full blur-2xl"></div>
+                                
+                                <div class="absolute top-3 left-3 sm:top-4 sm:left-4 flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-red-500/50 shadow-lg">
+                                    <i class="fa-solid fa-crown text-red-500 text-xs sm:text-sm animate-bounce"></i>
+                                    <span data-i18n="owner_badge_top" class="font-display font-bold text-[10px] sm:text-xs tracking-wider rgb-text uppercase">OWNER • ผู้ก่อตั้งหลัก</span>
+                                </div>
+
+                                <button onclick="fetchDiscordProfileByRole('owner', true)" title="คลิกเพื่อรีเฟรชข้อมูล Discord" class="absolute top-3 right-3 sm:top-4 sm:right-4 flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md border border-white/15 text-[10px] sm:text-[11px] text-slate-200 transition-all max-w-[52%] sm:max-w-none">
+                                    <i class="fa-brands fa-discord text-indigo-400 shrink-0"></i>
+                                    <span id="ownerSyncBadge" class="truncate">ID: 1375103992358768730</span>
+                                    <i class="fa-solid fa-arrows-rotate text-[10px] text-red-400 ml-0.5 shrink-0"></i>
+                                </button>
+                            </div>
+
+                            <!-- Avatar & Badges -->
+                            <div class="px-4 sm:px-8 relative">
+                                <div class="flex flex-wrap items-end justify-between -mt-12 sm:-mt-14 mb-4 gap-3">
+                                    <div class="relative group cursor-pointer" onclick="copyDiscordTag('owner')" title="คลิกเพื่อคัดลอกชื่อ Discord">
+                                        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-[3px] rgb-avatar-ring theme-avatar-glow">
+                                            <img id="ownerAvatar" 
+                                                 src="https://cdn.discordapp.com/embed/avatars/0.png" 
+                                                 alt="Owner Discord Avatar" 
+                                                 class="w-full h-full rounded-full object-cover bg-[#0b070a] border-4 border-[#080407]">
+                                        </div>
+                                        <span id="ownerStatusDot" class="status-ring absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#23a55a] text-[#23a55a] border-4 border-[#080407]" title="สถานะ Discord"></span>
+                                    </div>
+
+                                    <div class="flex items-center gap-1.5 sm:gap-2 bg-[#12080c] border border-red-500/20 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl shadow-inner">
+                                        <span title="Scripting & Core Systems" class="w-6 h-6 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-xs"><i class="fa-solid fa-code"></i></span>
+                                        <span title="UI Design" class="w-6 h-6 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs"><i class="fa-solid fa-layer-group"></i></span>
+                                        <span title="Animation & VFX" class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                                        <span class="text-xs font-semibold rgb-text pl-1 border-l border-white/10">OWNER</span>
+                                    </div>
+                                </div>
+
+                                <!-- Names (Discord Display Name & Username) -->
+                                <div class="mb-4 sm:mb-5">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h2 id="ownerDisplayName" class="text-xl sm:text-3xl font-extrabold text-white tracking-tight">AyatoFixed</h2>
+                                        <span class="px-2.5 py-0.5 rounded-md bg-red-600/20 border border-red-500/40 text-red-300 text-xs font-bold">
+                                            <i class="fa-solid fa-crown mr-1"></i>OWNER
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                        <span class="inline-flex items-center gap-1.5 text-indigo-300 text-xs sm:text-sm font-mono bg-indigo-500/10 border border-indigo-500/25 px-2.5 py-0.5 rounded-lg">
+                                            <i class="fa-brands fa-discord text-xs"></i>
+                                            <span id="ownerUsername">@ayatofixed</span>
+                                        </span>
+                                        <button onclick="copyDiscordTag('owner')" class="text-xs px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-red-300 transition-colors flex items-center gap-1" title="คัดลอกชื่อ Discord">
+                                            <i class="fa-regular fa-copy"></i> <span data-i18n="copy_name">คัดลอกชื่อ</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Bio & Role Responsibilities Box -->
+                                <div class="bg-[#12090d] border border-red-500/25 rounded-2xl p-3.5 sm:p-4 mb-5 sm:mb-6">
+                                    <div class="flex flex-wrap items-center justify-between gap-1 text-xs text-slate-400 mb-2.5">
+                                        <span class="uppercase tracking-wider font-bold rgb-text flex items-center gap-1.5">
+                                            <i class="fa-solid fa-bolt"></i> <span data-i18n="owner_role_heading">ข้อมูลและหน้าที่รับผิดชอบ (OWNER ROLE)</span>
+                                        </span>
+                                        <span id="ownerStatusText" class="text-emerald-400 font-medium text-[11px] sm:text-xs">● ออนไลน์ (Online)</span>
+                                    </div>
+                                    <p id="ownerBio" class="text-slate-100 text-xs sm:text-base font-medium leading-relaxed mb-3">
+                                        จัดการระบบเขียนสคริปต์ (Scripting), ทำ UI, Animation และ VFX
+                                    </p>
+
+                                    <!-- Explicit Skill Pills for Owner -->
+                                    <div class="flex flex-wrap gap-1.5 mb-3">
+                                        <span class="px-2.5 py-1 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 text-[11px] sm:text-xs font-medium flex items-center gap-1.5">
+                                            <i class="fa-solid fa-terminal text-[10px]"></i> <span data-i18n="skill_owner_1">จัดการระบบ & เขียนสคริปต์</span>
+                                        </span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[11px] sm:text-xs font-medium flex items-center gap-1.5">
+                                            <i class="fa-solid fa-desktop text-[10px]"></i> <span data-i18n="skill_owner_2">ทำระบบ UI</span>
+                                        </span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] sm:text-xs font-medium flex items-center gap-1.5">
+                                            <i class="fa-solid fa-person-running text-[10px]"></i> <span>Animation</span>
+                                        </span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-300 text-[11px] sm:text-xs font-medium flex items-center gap-1.5">
+                                            <i class="fa-solid fa-fire-flame-curved text-[10px]"></i> <span>VFX Effects</span>
+                                        </span>
+                                    </div>
+
+                                    <div class="pt-3 border-t border-white/10 flex items-center gap-3">
+                                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl rgb-avatar-ring p-[1.5px] shrink-0">
+                                            <div class="w-full h-full bg-[#0a0407] rounded-[10px] flex items-center justify-center text-white">
+                                                <i class="fa-solid fa-code text-xs sm:text-sm text-red-400"></i>
+                                            </div>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div id="ownerActivity" class="text-xs font-semibold text-white truncate">Lead Scripter • UI / Animation / VFX Specialist</div>
+                                            <div class="text-[10px] sm:text-[11px] text-slate-400 truncate">Discord ID: 1375103992358768730 • Roblox: AyatoFixed (#9626965436)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Direct Buttons Under Profile -->
+                        <div class="px-4 sm:px-8 pb-6 sm:pb-7 pt-2 mt-auto">
+                            <div class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-2.5 flex items-center justify-between">
+                                <span><i class="fa-solid fa-link text-red-400 mr-1"></i> <span data-i18n="direct_links_label">ลิงก์เชื่อมต่อประจำตัว (Direct Links)</span></span>
+                                <span class="rgb-text font-mono font-bold">Roblox #9626965436</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                                <a id="ownerDiscordLink" href="https://discord.com/users/1375103992358768730" target="_blank" rel="noopener noreferrer" 
+                                   onmouseenter="playHoverSound()"
+                                   class="btn-shimmer group flex items-center justify-between px-4 py-3 sm:py-3.5 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white font-medium text-sm shadow-lg shadow-indigo-600/30 transition-all duration-200 hover:-translate-y-0.5">
+                                    <div class="flex items-center gap-2.5">
+                                        <i class="fa-brands fa-discord text-lg"></i>
+                                        <div class="text-left">
+                                            <div data-i18n="btn_discord_profile" class="text-xs font-bold leading-none">โปรไฟล์ Discord</div>
+                                            <div data-i18n="btn_discord_sub" class="text-[10px] text-indigo-100 opacity-90 mt-0.5">เปิดโปรไฟล์ / แอดเพื่อน</div>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </a>
+
+                                <a id="ownerRobloxLink" href="https://www.roblox.com/th/users/9626965436/profile" target="_blank" rel="noopener noreferrer"
+                                   onmouseenter="playHoverSound()"
+                                   class="btn-shimmer group flex items-center justify-between px-4 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-[#ff1744] via-[#d50000] to-[#b71c1c] hover:brightness-110 text-white font-medium text-sm shadow-lg shadow-red-600/40 transition-all duration-200 hover:-translate-y-0.5">
+                                    <div class="flex items-center gap-2.5">
+                                        <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24">
+                                            <path d="M5.164 0L.16 18.928L18.836 24L23.84 5.072L5.164 0ZM14.02 14.37L9.578 13.192L10.752 8.758L15.194 9.936L14.02 14.37Z"/>
+                                        </svg>
+                                        <div class="text-left">
+                                            <div data-i18n="btn_roblox_profile" class="text-xs font-bold leading-none">โปรไฟล์ Roblox</div>
+                                            <div class="text-[10px] text-rose-100 opacity-90 mt-0.5">AyatoFixed</div>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ==================== CARD 2: CO-OWNER (789027937633959936) ==================== -->
+                <div style="--stagger-delay: 140ms;" class="scroll-card-3d tilt-card founder-glow-coowner rounded-[1.5rem] h-full flex flex-col" data-tilt>
+                    <div class="bg-[#080407]/95 backdrop-blur-2xl border border-red-500/25 rounded-[1.5rem] overflow-hidden flex flex-col justify-between h-full shadow-2xl">
+                        
+                        <div>
+                            <!-- Banner -->
+                            <div id="coownerBannerBox" class="h-32 sm:h-40 w-full relative overflow-hidden bg-cover bg-center">
+                                <div class="absolute inset-0 opacity-40 rgb-laser-bar mix-blend-overlay"></div>
+                                <div class="absolute inset-0 opacity-30 theme-dot-pattern"></div>
+                                <div class="absolute -right-10 -top-10 w-44 h-44 theme-orb-secondary rounded-full blur-2xl"></div>
+                                <div class="absolute left-1/3 -bottom-12 w-40 h-40 theme-orb-primary rounded-full blur-2xl"></div>
+                                
+                                <div class="absolute top-3 left-3 sm:top-4 sm:left-4 flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-rose-500/50 shadow-lg">
+                                    <i class="fa-solid fa-bolt-lightning text-rose-400 text-xs sm:text-sm animate-pulse"></i>
+                                    <span data-i18n="coowner_badge_top" class="font-display font-bold text-[10px] sm:text-xs tracking-wider rgb-text uppercase">CO-OWNER • ผู้ร่วมก่อตั้ง</span>
+                                </div>
+
+                                <button onclick="fetchDiscordProfileByRole('coowner', true)" title="คลิกเพื่อรีเฟรชข้อมูล Discord" class="absolute top-3 right-3 sm:top-4 sm:right-4 flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md border border-white/15 text-[10px] sm:text-[11px] text-slate-200 transition-all max-w-[52%] sm:max-w-none">
+                                    <i class="fa-brands fa-discord text-indigo-400 shrink-0"></i>
+                                    <span id="coownerSyncBadge" class="truncate">ID: 789027937633959936</span>
+                                    <i class="fa-solid fa-arrows-rotate text-[10px] text-rose-400 ml-0.5 shrink-0"></i>
+                                </button>
+                            </div>
+
+                            <!-- Avatar & Badges -->
+                            <div class="px-4 sm:px-8 relative">
+                                <div class="flex flex-wrap items-end justify-between -mt-12 sm:-mt-14 mb-4 gap-3">
+                                    <div class="relative group cursor-pointer" onclick="copyDiscordTag('coowner')" title="คลิกเพื่อคัดลอกชื่อ Discord">
+                                        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-[3px] rgb-avatar-ring theme-avatar-glow">
+                                            <img id="coownerAvatar" 
+                                                 src="https://cdn.discordapp.com/embed/avatars/1.png" 
+                                                 alt="Co-Owner Discord Avatar" 
+                                                 class="w-full h-full rounded-full object-cover bg-[#0b070a] border-4 border-[#080407]">
+                                        </div>
+                                        <span id="coownerStatusDot" class="status-ring absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#23a55a] text-[#23a55a] border-4 border-[#080407]" title="สถานะ Discord"></span>
+                                    </div>
+
+                                    <div class="flex items-center gap-1.5 sm:gap-2 bg-[#12080c] border border-red-500/20 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl shadow-inner">
+                                        <span title="Scripting" class="w-6 h-6 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-xs"><i class="fa-solid fa-code"></i></span>
+                                        <span title="3D Model & Build Map" class="w-6 h-6 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs"><i class="fa-solid fa-cubes"></i></span>
+                                        <span title="System Optimization" class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs"><i class="fa-solid fa-gauge-high"></i></span>
+                                        <span class="text-xs font-semibold rgb-text pl-1 border-l border-white/10">CO-OWNER</span>
+                                    </div>
+                                </div>
+
+                                <!-- Names (Discord Display Name & Username) -->
+                                <div class="mb-4 sm:mb-5">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h2 id="coownerDisplayName" class="text-xl sm:text-3xl font-extrabold text-white tracking-tight">piyth001</h2>
+                                        <span class="px-2.5 py-0.5 rounded-md bg-rose-600/20 border border-rose-500/40 text-rose-300 text-xs font-bold">
+                                            <i class="fa-solid fa-shield-halved mr-1"></i>CO-OWNER
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                        <span class="inline-flex items-center gap-1.5 text-indigo-300 text-xs sm:text-sm font-mono bg-indigo-500/10 border border-indigo-500/25 px-2.5 py-0.5 rounded-lg">
+                                            <i class="fa-brands fa-discord text-xs"></i>
+                                            <span id="coownerUsername">@piyth001</span>
+                                        </span>
+                                        <button onclick="copyDiscordTag('coowner')" class="text-xs px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-rose-300 transition-colors flex items-center gap-1" title="คัดลอกชื่อ Discord">
+                                            <i class="fa-regular fa-copy"></i> <span data-i18n="copy_name">คัดลอกชื่อ</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Bio & Role Responsibilities Box -->
+                                <div class="bg-[#12090d] border border-red-500/25 rounded-2xl p-3.5 sm:p-4 mb-5 sm:mb-6">
+                                    <div class="flex flex-wrap items-center justify-between gap-1 text-xs text-slate-400 mb-2.5">
+                                        <span class="uppercase tracking-wider font-bold rgb-text flex items-center gap-1.5">
+                                            <i class="fa-solid fa-compass-drafting"></i> <span data-i18n="coowner_role_heading">ข้อมูลและหน้าที่รับผิดชอบ (CO-OWNER ROLE)</span>
+                                        </span>
+                                        <span id="coownerStatusText" class="text-emerald-400 font-medium text-[11px] sm:text-xs">● ออนไลน์ (Online)</span>
+                                    </div>
+                                    <p id="coownerBio" class="text-slate-100 text-xs sm:text-base font-medium leading-relaxed mb-3">
+                                        เขียนสคริปต์ (Scripting), ทำโมเดล (3D Modeling), Build Map และจัดการ Optimize ระบบ
+                                    </p>
+
+                                    <!-- Explicit Skill Pills for Co-Owner -->
+                                    <div class="flex flex-wrap gap-1.5 mb-3">
+                                        <span class="px-2.5 py-1 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 text-[11px] sm:text-xs font-medium flex items-center gap-1.5">
+                                            <i class="fa-solid fa-code text-[10px]"></i> <span data-i18n="skill_coowner_1">เขียนสคริปต์ (Scripting)</span>
+                                        </span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[11px] sm:text-xs font-medium flex items-center gap-1.5">
+                                            <i class="fa-solid fa-cube text-[10px]"></i> <span data-i18n="skill_coowner_2">ทำโมเดล (3D Model)</span>
+                                        </span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] sm:text-xs font-medium flex items-center gap-1.5">
+                                            <i class="fa-solid fa-map-location-dot text-[10px]"></i> <span>Build Map</span>
+                                        </span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] sm:text-xs font-medium flex items-center gap-1.5">
+                                            <i class="fa-solid fa-gauge-high text-[10px]"></i> <span data-i18n="skill_coowner_4">จัดการ Optimize ระบบ</span>
+                                        </span>
+                                    </div>
+
+                                    <div class="pt-3 border-t border-white/10 flex items-center gap-3">
+                                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl rgb-avatar-ring p-[1.5px] shrink-0">
+                                            <div class="w-full h-full bg-[#0a0407] rounded-[10px] flex items-center justify-center text-white">
+                                                <i class="fa-solid fa-cubes text-xs sm:text-sm text-rose-400"></i>
+                                            </div>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div id="coownerActivity" class="text-xs font-semibold text-white truncate">Co-Owner • Scripter / 3D Modeler / Map Builder / Optimizer</div>
+                                            <div class="text-[10px] sm:text-[11px] text-slate-400 truncate">Discord ID: 789027937633959936 • Roblox: piyth001 (#732463046)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Direct Buttons Under Profile -->
+                        <div class="px-4 sm:px-8 pb-6 sm:pb-7 pt-2 mt-auto">
+                            <div class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-2.5 flex items-center justify-between">
+                                <span><i class="fa-solid fa-link text-rose-400 mr-1"></i> <span data-i18n="direct_links_label">ลิงก์เชื่อมต่อประจำตัว (Direct Links)</span></span>
+                                <span class="rgb-text font-mono font-bold">Roblox #732463046</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                                <a id="coownerDiscordLink" href="https://discord.com/users/789027937633959936" target="_blank" rel="noopener noreferrer"
+                                   onmouseenter="playHoverSound()"
+                                   class="btn-shimmer group flex items-center justify-between px-4 py-3 sm:py-3.5 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white font-medium text-sm shadow-lg shadow-indigo-600/30 transition-all duration-200 hover:-translate-y-0.5">
+                                    <div class="flex items-center gap-2.5">
+                                        <i class="fa-brands fa-discord text-lg"></i>
+                                        <div class="text-left">
+                                            <div data-i18n="btn_discord_profile" class="text-xs font-bold leading-none">โปรไฟล์ Discord</div>
+                                            <div data-i18n="btn_discord_sub" class="text-[10px] text-indigo-100 opacity-90 mt-0.5">เปิดโปรไฟล์ / แอดเพื่อน</div>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </a>
+
+                                <a id="coownerRobloxLink" href="https://www.roblox.com/th/users/732463046/profile" target="_blank" rel="noopener noreferrer"
+                                   onmouseenter="playHoverSound()"
+                                   class="btn-shimmer group flex items-center justify-between px-4 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-[#ff1744] via-[#d50000] to-[#b71c1c] hover:brightness-110 text-white font-medium text-sm shadow-lg shadow-red-600/40 transition-all duration-200 hover:-translate-y-0.5">
+                                    <div class="flex items-center gap-2.5">
+                                        <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24">
+                                            <path d="M5.164 0L.16 18.928L18.836 24L23.84 5.072L5.164 0ZM14.02 14.37L9.578 13.192L10.752 8.758L15.194 9.936L14.02 14.37Z"/>
+                                        </svg>
+                                        <div class="text-left">
+                                            <div data-i18n="btn_roblox_profile" class="text-xs font-bold leading-none">โปรไฟล์ Roblox</div>
+                                            <div class="text-[10px] text-rose-100 opacity-90 mt-0.5">piyth001</div>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Scroll Down Cue -->
+            <div class="mt-10 sm:mt-14 flex flex-col items-center justify-center reveal-item">
+                <a href="#about" onclick="smoothScrollToSection(event, 'about')" class="group flex flex-col items-center gap-2 text-slate-400 hover:text-white transition-colors text-center px-4">
+                    <span data-i18n="scroll_down_cue" class="text-[11px] sm:text-xs uppercase tracking-widest">เลื่อนลงเพื่อดูระบบงาน ผลงานวิดีโอ และคลังแมพ Roblox</span>
+                    <div class="w-8 h-12 sm:w-9 sm:h-14 rounded-full border-2 border-white/15 flex items-start justify-center p-1.5 group-hover:border-red-500 transition-colors">
+                        <div class="w-2 h-3 rounded-full bg-red-500 animate-bounce"></div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Animated Laser Section Divider -->
+        <div class="scroll-laser-line"></div>
+
+        <!-- SECTION 2: STUDIO EXPLANATIONS -->
+        <section id="about" data-section-title="ระบบงานสตูดิโอ" class="py-12 sm:py-16 section-cyber-loader scroll-momentum-section relative">
+            <div class="cyber-scan-overlay" id="scanOverlay-about"></div>
+
+            <div class="max-w-3xl mx-auto text-center mb-10 sm:mb-14 reveal-item px-2">
+                <span class="px-3.5 py-1 rounded-full bg-red-600/10 border border-red-500/30 text-red-300 text-[11px] sm:text-xs font-semibold uppercase tracking-widest">
+                    STUDIO OVERVIEW & ARCHITECTURE
+                </span>
+                <h2 data-i18n="about_heading" class="font-display text-2xl sm:text-4xl font-bold text-white mt-3 mb-3 sm:mb-4">
+                    รายละเอียดทีมพัฒนา & ขอบเขตการสร้างสรรค์
+                </h2>
+                <p id="aboutSubheading" class="text-slate-400 text-xs sm:text-base leading-relaxed">
+                    การแบ่งสายงานอย่างชัดเจนระหว่าง <span class="text-red-400 font-semibold">Owner</span> (จัดการระบบเขียนสคริปต์, ทำ UI, Animation, VFX) และ <span class="text-rose-400 font-semibold">Co-Owner</span> (เขียนสคริปต์, ทำโมเดล, Build Map, จัดการ Optimize ระบบ) เพื่อสร้างแมพคุณภาพสูงบน Roblox
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
+                <div style="--stagger-delay: 0ms;" class="scroll-card-3d group bg-[#0d070a]/90 hover:bg-[#150a0f] border border-red-500/20 hover:border-red-500/50 rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1.5">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-red-600/15 border border-red-500/30 flex items-center justify-center text-red-400 text-lg sm:text-xl mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h3 data-i18n="arch_1_title" class="text-base sm:text-lg font-bold text-white mb-2">1. ระบบ Luau Scripting</h3>
+                    <p data-i18n="arch_1_desc" class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        ทั้ง Owner และ Co-Owner ร่วมกันวางโครงสร้างสคริปต์ระบบเกมเพลย์, ระบบ Combat, DataStore และระบบป้องกันช่องโหว่ที่เสถียร
+                    </p>
+                </div>
+
+                <div style="--stagger-delay: 110ms;" class="scroll-card-3d group bg-[#0d070a]/90 hover:bg-[#150a0f] border border-red-500/20 hover:border-red-500/50 rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1.5">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-600/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg sm:text-xl mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3 data-i18n="arch_2_title" class="text-base sm:text-lg font-bold text-white mb-2">2. UI, Animation & VFX</h3>
+                    <p data-i18n="arch_2_desc" class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        ดูแลโดย Owner เน้นออกแบบหน้าต่าง UI ที่ลื่นไหล ท่วงท่า Animation ที่สมจริง และเอฟเฟกต์สกิล VFX สุดอลังการ
+                    </p>
+                </div>
+
+                <div style="--stagger-delay: 220ms;" class="scroll-card-3d group bg-[#0d070a]/90 hover:bg-[#150a0f] border border-red-500/20 hover:border-red-500/50 rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1.5">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-rose-600/15 border border-rose-500/30 flex items-center justify-center text-rose-400 text-lg sm:text-xl mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-cubes"></i>
+                    </div>
+                    <h3 data-i18n="arch_3_title" class="text-base sm:text-lg font-bold text-white mb-2">3. 3D Model & Build Map</h3>
+                    <p data-i18n="arch_3_desc" class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        ดูแลโดย Co-Owner สร้างสรรค์โมเดล 3D อาวุธ สิ่งปลูกสร้าง และจัดวางองค์ประกอบแผนที่ (Build Map) ให้มีเอกลักษณ์เฉพาะตัว
+                    </p>
+                </div>
+
+                <div style="--stagger-delay: 330ms;" class="scroll-card-3d group bg-[#0d070a]/90 hover:bg-[#150a0f] border border-red-500/20 hover:border-red-500/50 rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1.5">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-600/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg sm:text-xl mb-4 sm:mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <h3 data-i18n="arch_4_title" class="text-base sm:text-lg font-bold text-white mb-2">4. System Optimization</h3>
+                    <p data-i18n="arch_4_desc" class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        จัดการ Optimize ระบบและแมพโดย Co-Owner เพื่อลดอาการแลค ลดการใช้ Memory และทำให้ผู้เล่นทุกอุปกรณ์เล่นได้เฟรมเรตสูงสุด
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animated Laser Section Divider -->
+        <div class="scroll-laser-line"></div>
+
+        <!-- SECTION 3: OFFICIAL VIDEO SHOWCASE -->
+        <section id="video-showcase" data-section-title="ผลงานวิดีโอ" class="py-12 sm:py-16 section-cyber-loader scroll-momentum-section relative">
+            <div class="cyber-scan-overlay" id="scanOverlay-video"></div>
+
+            <!-- Section Header -->
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-6 sm:mb-8 gap-4 sm:gap-6 reveal-item">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-600/10 border border-red-500/30 text-red-300 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-3">
+                        <i class="fa-solid fa-circle-play text-red-400 animate-pulse"></i>
+                        <span>OFFICIAL STUDIO SHOWREEL</span>
+                    </div>
+                    <h2 class="font-display text-2xl sm:text-4xl font-bold text-white">
+                        <span data-i18n="video_heading_prefix">ผลงานวิดีโอ & ระบบเกม</span> <span class="rgb-text">Showcase Reels</span>
+                    </h2>
+                    <p data-i18n="video_subheading" class="text-slate-400 text-xs sm:text-base mt-2 max-w-2xl">
+                        รวบรวมผลงานระบบสคริปต์ (Scripting), การออกแบบ UI & Animation, เอฟเฟกต์สกิล VFX, การปั้น 3D Model และการสร้างแมพจากทีมพัฒนา DARKSHADOW STUDIO
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2.5 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl bg-[#12080c] border border-red-500/25 self-start lg:self-auto">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0"></span>
+                    <span data-i18n="video_fps_badge" class="text-[11px] sm:text-xs font-semibold text-slate-200">ระบบเรนเดอร์ 60FPS Real-Time Interactive</span>
+                </div>
+            </div>
+
+            <!-- Category Filter Bar -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 sm:mb-8 reveal-item no-scrollbar">
+                <button onclick="filterVideoCategory('all')" data-vid-cat="all" class="video-cat-btn shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white shadow-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-border-all"></i> <span data-i18n="vid_cat_all">ผลงานทั้งหมด (All Reels)</span>
+                </button>
+                <button onclick="filterVideoCategory('scripting')" data-vid-cat="scripting" class="video-cat-btn shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-[#12080c] hover:bg-white/10 text-slate-300 border border-red-500/20 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-code text-red-400"></i> <span data-i18n="vid_cat_script">ระบบสคริปต์ (Scripting & Combat)</span>
+                </button>
+                <button onclick="filterVideoCategory('uivfx')" data-vid-cat="uivfx" class="video-cat-btn shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-[#12080c] hover:bg-white/10 text-slate-300 border border-red-500/20 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> <span data-i18n="vid_cat_uivfx">UI, Animation & VFX (Owner)</span>
+                </button>
+                <button onclick="filterVideoCategory('modelmap')" data-vid-cat="modelmap" class="video-cat-btn shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold bg-[#12080c] hover:bg-white/10 text-slate-300 border border-red-500/20 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-cubes text-rose-400"></i> <span data-i18n="vid_cat_model">3D Model, Build Map & Optimize (Co-Owner)</span>
+                </button>
+            </div>
+
+            <!-- Video Cards Grid -->
+            <div id="videoShowcaseGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+                <!-- Populated dynamically by JS -->
+            </div>
+        </section>
+
+        <!-- Animated Laser Section Divider -->
+        <div class="scroll-laser-line"></div>
+
+        <!-- SECTION 4: ROBLOX MAPS SHOWCASE -->
+        <section id="maps-showcase" data-section-title="คลังผลงานแมพ Roblox" class="py-12 sm:py-16 section-cyber-loader scroll-momentum-section relative">
+            <div class="cyber-scan-overlay" id="scanOverlay-maps"></div>
+
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-4 sm:gap-6 reveal-item">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/10 border border-red-500/30 text-red-300 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-3">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                        <span>ROBLOX EXPERIENCES & MAPS ARCHIVE</span>
+                    </div>
+                    <h2 class="font-display text-2xl sm:text-4xl font-bold text-white">
+                        <span data-i18n="maps_heading_prefix">คลังผลงานแมพใน</span> <span class="rgb-text">Roblox</span>
+                    </h2>
+                    <p data-i18n="maps_subheading" class="text-slate-400 text-xs sm:text-base mt-2 max-w-2xl">
+                        ผลงานการพัฒนาแมพและประสบการณ์บนแพลตฟอร์ม Roblox ที่ผสานระบบ Luau Scripting, UI/VFX, 3D Modeling และการทำ System Optimization เต็มรูปแบบ
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2.5 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl bg-[#12080c] border border-red-500/25 self-start md:self-auto">
+                    <i class="fa-solid fa-shield-halved text-red-400 text-xs"></i>
+                    <span class="text-xs font-semibold text-slate-200">Verified Studio Experiences</span>
+                </div>
+            </div>
+
+            <div id="mapCardsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7"></div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-red-500/20 bg-[#050305]/90 backdrop-blur-md py-8 sm:py-10 pb-24 sm:pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-400 text-center sm:text-left">
+            <div class="flex items-center gap-2.5 justify-center">
+                <span class="w-2.5 h-2.5 rounded-full rgb-laser-bar shrink-0"></span>
+                <span>© 2026 <strong class="rgb-text font-extrabold">DARKSHADOW STUDIO</strong> • Owner & Co-Owner Official Portal</span>
+            </div>
+            <div class="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
+                <button onclick="openThemeModal()" class="rgb-text font-bold hover:opacity-80 transition-opacity">
+                    <i class="fa-solid fa-palette mr-1"></i><span data-i18n="footer_change_theme">เปลี่ยนสีธีมเว็บ</span>
+                </button>
+                <span>•</span>
+                <a id="footerDiscordServerLink" href="https://discord.gg/mzp9pmEkp" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 font-medium transition-colors flex items-center gap-1.5">
+                    <i class="fa-brands fa-discord"></i><span data-i18n="footer_join_discord">เข้าร่วมกลุ่ม Discord</span>
+                </a>
+                <span>•</span>
+                <button onclick="smoothGlideToTop()" class="text-red-400 hover:text-red-300 font-medium transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-angles-up"></i><span data-i18n="footer_scroll_top">เลื่อนกลับขึ้นบนสุด</span>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Quick Theme Button (Bottom Left - Mobile & Desktop Responsive) -->
+    <button onclick="openThemeModal()" title="เปลี่ยนสีธีมหน้าเว็บ / Studio Theme" class="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 group flex items-center gap-2 sm:gap-2.5 p-2.5 sm:px-4 sm:py-3 rounded-2xl bg-[#0b0609]/95 hover:bg-[#140a10] border border-white/15 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95">
+        <span class="w-7 h-7 sm:w-6 sm:h-6 rounded-xl rgb-avatar-ring flex items-center justify-center text-white text-xs shadow-md">
+            <i class="fa-solid fa-palette"></i>
+        </span>
+        <div class="text-left hidden sm:block">
+            <div class="text-[10px] text-slate-400 leading-none">STUDIO THEME</div>
+            <div data-i18n="floating_theme_btn" class="text-xs font-bold rgb-text leading-tight mt-0.5">เปลี่ยนธีมสีเว็บ</div>
+        </div>
+    </button>
+
+    <!-- MODAL: THEME GALLERY STUDIO -->
+    <div id="themeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md">
+        <div class="bg-[#0b070a] border border-white/15 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-5 sm:p-8 relative">
+            
+            <!-- Modal Header -->
+            <div class="flex items-start justify-between gap-4 pb-4 sm:pb-5 border-b border-white/10 mb-5 sm:mb-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-xs font-semibold rgb-text uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-swatchbook"></i> DARKSHADOW THEME COLLECTION
+                    </div>
+                    <h3 data-i18n="theme_modal_title" class="text-lg sm:text-2xl font-bold text-white">เลือกธีมสีประจำสตูดิโอ (12 Curated Themes)</h3>
+                    <p data-i18n="theme_modal_sub" class="text-xs sm:text-sm text-slate-400 mt-1">
+                        คลิกเลือกโทนสีที่ต้องการเพื่อปรับเปลี่ยนบรรยากาศ การ์ดโปรไฟล์ และแสงเงาทั้งหน้าเว็บทันที
+                    </p>
+                </div>
+                <button onclick="closeThemeModal()" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white flex items-center justify-center transition-colors shrink-0">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- DARK / LIGHT MODE STUDIO SWITCHER -->
+            <div class="mb-5 p-3.5 sm:p-4 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl rgb-avatar-ring flex items-center justify-center text-white shadow-md shrink-0">
+                        <i id="modalModeBannerIcon" class="fa-solid fa-moon text-sm"></i>
+                    </div>
+                    <div>
+                        <div data-i18n="mode_section_title" class="text-xs sm:text-sm font-bold text-white">โหมดแสงหน้าเว็บ (Display Appearance)</div>
+                        <div data-i18n="mode_section_sub" class="text-[11px] text-slate-400">เลือกสลับโหมดมืดไซเบอร์ (Dark) หรือโหมดสว่างคริสตัล (Light) ร่วมกับสีธีมได้ทุกเฉด</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 bg-black/40 p-1 rounded-xl border border-white/10 shrink-0">
+                    <button id="modalDarkBtn"
+                            type="button"
+                            onclick="setColorMode('dark')"
+                            class="mode-switch-pill mode-active flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-white">
+                        <i class="fa-solid fa-moon text-amber-300"></i>
+                        <span data-i18n="mode_dark_label">Dark Cyber</span>
+                    </button>
+                    <button id="modalLightBtn"
+                            type="button"
+                            onclick="setColorMode('light')"
+                            class="mode-switch-pill flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-slate-300 hover:text-white">
+                        <i class="fa-solid fa-sun text-amber-400"></i>
+                        <span data-i18n="mode_light_label">Light Crystal</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Theme Status Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4 px-3.5 sm:px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/10">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full shrink-0" style="background: var(--theme-primary); box-shadow: 0 0 10px var(--theme-primary);"></span>
+                    <span data-i18n="theme_active_label" class="text-xs text-slate-300 font-medium">ธีมที่เลือกใช้งานอยู่:</span>
+                    <span id="currentThemeBadge" class="text-xs font-bold rgb-text">Crimson Shadow</span>
+                </div>
+                <div class="flex items-center gap-3 w-full sm:w-56">
+                    <span data-i18n="theme_glow_label" class="text-[11px] text-slate-400 whitespace-nowrap">แสงเรืองรอง:</span>
+                    <input id="glowRangeInput" type="range" min="20" max="100" value="85" oninput="updateGlowIntensity(this.value)" class="w-full accent-rose-500 cursor-pointer">
+                    <span id="glowValueLabel" class="text-[11px] font-mono text-white w-9 text-right">85%</span>
+                </div>
+            </div>
+
+            <!-- Preset Themes Grid (12 Themes) -->
+            <div id="themePresetsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3.5 mb-6">
+                <!-- Populated dynamically by JS -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/10">
+                <button onclick="selectPresetTheme('crimson')" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="theme_reset_btn">คืนค่าเป็นธีมเริ่มต้น (Crimson Shadow)</span>
+                </button>
+                <button onclick="closeThemeModal()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl rgb-laser-bar text-white text-sm font-bold shadow-lg transition-all active:scale-95">
+                    <i class="fa-solid fa-check mr-1.5"></i><span data-i18n="theme_save_close">บันทึกและปิดหน้าต่าง</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CINEMA VIDEO PLAYER -->
+    <div id="videoPlayerModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-xl">
+        <div class="bg-[#0b070a] border border-red-500/30 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl relative">
+            <!-- Top Bar -->
+            <div class="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-white/10 bg-[#12080c]">
+                <div class="flex items-center gap-3 min-w-0">
+                    <span class="w-8 h-8 rounded-xl rgb-avatar-ring flex items-center justify-center text-white text-xs shrink-0">
+                        <i class="fa-solid fa-play"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <div id="modalVideoCategory" class="text-[10px] font-bold uppercase tracking-widest rgb-text">SHOWCASE REEL</div>
+                        <h3 id="modalVideoTitle" class="text-sm sm:text-lg font-bold text-white truncate">กำลังโหลดผลงาน...</h3>
+                    </div>
+                </div>
+                <button onclick="closeVideoPlayerModal()" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white flex items-center justify-center transition-colors shrink-0">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Video Stage -->
+            <div id="modalVideoStage" class="relative w-full aspect-video bg-[#040204] flex items-center justify-center overflow-hidden">
+                <canvas id="modalDemoCanvas" class="w-full h-full block"></canvas>
+                <div id="modalCustomMediaContainer" class="absolute inset-0 hidden w-full h-full bg-black"></div>
+
+                <!-- HUD Overlay inside Live Player -->
+                <div id="modalCanvasHud" class="absolute inset-0 pointer-events-none p-3 sm:p-5 flex flex-col justify-between">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="px-2.5 sm:px-3 py-1 rounded-full bg-black/75 border border-white/15 text-[10px] sm:text-[11px] font-mono text-emerald-400 flex items-center gap-1.5 sm:gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            REAL-TIME 60FPS ENGINE
+                        </span>
+                        <span id="modalVideoRoleBadge" class="px-2.5 sm:px-3 py-1 rounded-full bg-black/75 border border-red-500/40 text-[10px] sm:text-[11px] font-bold text-red-300 truncate">
+                            OWNER • UI / VFX
+                        </span>
+                    </div>
+                    <div class="flex items-end justify-between gap-2 sm:gap-4">
+                        <div class="bg-black/70 backdrop-blur-md border border-white/10 rounded-xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[10px] sm:text-xs text-slate-300">
+                            <i class="fa-solid fa-wand-magic-sparkles text-red-400 mr-1"></i><span data-i18n="modal_interactive_hint">แตะหรือเลื่อนเมาส์บนหน้าจอเพื่อโต้ตอบกับเอฟเฟกต์</span>
+                        </div>
+                        <span id="modalVideoDuration" class="px-2 sm:px-2.5 py-1 rounded-lg bg-black/80 text-[10px] sm:text-xs font-mono text-white border border-white/10 shrink-0">01:15 / HD</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Info Footer -->
+            <div class="p-4 sm:p-6 bg-[#0d070a] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1 max-w-2xl">
+                    <p id="modalVideoDesc" class="text-xs sm:text-sm text-slate-300 leading-relaxed"></p>
+                    <div id="modalVideoTechTags" class="flex flex-wrap gap-1.5 pt-2"></div>
+                </div>
+                <div class="flex items-center gap-2.5 shrink-0">
+                    <button onclick="closeVideoPlayerModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl rgb-laser-bar text-white text-xs font-bold shadow-lg transition-all">
+                        <span data-i18n="modal_close_btn">ปิดหน้าต่างแสดงผลงาน</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./app.js" defer></script>
+</body>
+</html>
