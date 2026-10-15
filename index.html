@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" class="boot-locked">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -16,6 +16,53 @@
     <style id="dynamicThemeOverrides"></style>
 </head>
 <body class="relative min-h-screen">
+
+    <!-- Boot Sequence Preloader (shown before the portal renders) -->
+    <div id="bootPreloader" class="boot-preloader" role="status" aria-live="polite" aria-label="DARKSHADOW STUDIO กำลังโหลด">
+        <div class="boot-backdrop" aria-hidden="true"></div>
+        <div class="boot-grid" aria-hidden="true"></div>
+        <div class="boot-scanlines" aria-hidden="true"></div>
+        <div class="boot-sweep" aria-hidden="true"></div>
+
+        <div class="boot-frame" aria-hidden="true">
+            <span class="boot-corner boot-corner-tl"></span>
+            <span class="boot-corner boot-corner-tr"></span>
+            <span class="boot-corner boot-corner-bl"></span>
+            <span class="boot-corner boot-corner-br"></span>
+        </div>
+
+        <div class="boot-core">
+            <div class="boot-emblem" aria-hidden="true">
+                <span class="boot-ring boot-ring-outer"></span>
+                <span class="boot-ring boot-ring-dashed"></span>
+                <span class="boot-ring boot-ring-pulse"></span>
+                <i class="fa-solid fa-skull-crossbones boot-crest"></i>
+            </div>
+
+            <h1 class="boot-title font-display" data-text="DARKSHADOW" aria-hidden="true">DARKSHADOW</h1>
+
+            <div class="boot-subline" aria-hidden="true">
+                <span class="boot-subline-rule"></span>
+                <span class="boot-studio-badge font-display">STUDIO</span>
+                <span class="boot-subline-rule"></span>
+            </div>
+
+            <p class="boot-tagline font-display">DISCORD &amp; ROBLOX DEVELOPER PORTAL</p>
+
+            <div class="boot-progress">
+                <div class="boot-track">
+                    <div id="bootProgressFill" class="boot-fill"></div>
+                </div>
+                <div class="boot-progress-meta">
+                    <span id="bootStatusText" class="boot-status">INITIALIZING DARKSHADOW CORE</span>
+                    <span id="bootProgressPercent" class="boot-percent">000%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="boot-wipe-edge" aria-hidden="true"></div>
+        <div class="boot-flash" aria-hidden="true"></div>
+    </div>
 
     <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
     <div class="cursor-spotlight"></div>
@@ -35,41 +82,41 @@
 
     <!-- Top Navigation Bar -->
     <header id="mainNavbar" class="sticky top-0 z-40 backdrop-blur-xl bg-[#050305]/90 border-b border-red-500/15 transition-all duration-500">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-3 lg:gap-4">
             <!-- Brand Logo -->
-            <a href="#top" onclick="smoothScrollToSection(event, 'top')" class="flex items-center gap-2.5 sm:gap-3.5 group min-w-0 shrink">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl rgb-avatar-ring p-[2px] sm:p-[2.5px] theme-avatar-glow group-hover:scale-110 transition-transform shrink-0">
+            <a href="#top" onclick="smoothScrollToSection(event, 'top')" class="flex items-center gap-2 sm:gap-3.5 group min-w-0 shrink xl:min-w-max xl:shrink-0">
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-2xl rgb-avatar-ring p-[2px] sm:p-[2.5px] theme-avatar-glow group-hover:scale-110 transition-transform shrink-0">
                     <div class="w-full h-full bg-[#070306] rounded-[13px] sm:rounded-[14px] flex items-center justify-center">
-                        <i class="fa-solid fa-skull-crossbones rgb-text text-base sm:text-xl"></i>
+                        <i class="fa-solid fa-skull-crossbones rgb-text text-sm sm:text-xl"></i>
                     </div>
                 </div>
                 <div class="min-w-0">
                     <div class="flex items-center gap-1.5 sm:gap-2">
-                        <span class="font-display font-extrabold text-sm sm:text-xl tracking-wider sm:tracking-widest rgb-text truncate">DARKSHADOW</span>
-                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-1.5 sm:px-2.5 py-0.5 rounded-full bg-red-600/20 text-red-300 border border-red-500/40 shadow-sm shrink-0">STUDIO</span>
+                        <span class="font-display font-extrabold text-[13px] sm:text-xl tracking-wider xl:tracking-widest rgb-text truncate">DARKSHADOW</span>
+                        <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-red-600/20 text-red-300 border border-red-500/40 shadow-sm shrink-0">STUDIO</span>
                     </div>
-                    <p id="navSubtitle" class="text-[10px] sm:text-[11px] text-slate-400 tracking-wide truncate hidden xs:block sm:block">Discord & Roblox Developer Portal</p>
+                    <p id="navSubtitle" class="text-[11px] text-slate-400 tracking-wide truncate hidden sm:block">Discord & Roblox Developer Portal</p>
                 </div>
             </a>
 
-            <!-- Desktop Navigation Pills -->
-            <nav class="hidden md:flex items-center gap-1 bg-white/[0.04] border border-white/10 rounded-full px-2 py-1.5 shrink-0">
-                <a href="#founders" onclick="smoothScrollToSection(event, 'founders')" data-nav-section="founders" class="nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-white bg-red-600/20 border border-red-500/30 transition-all">
+            <!-- Desktop Navigation Pills (visible from 1280px so smaller screens use the scrollable bar below) -->
+            <nav class="hidden xl:flex items-center gap-1 shrink min-w-0 bg-white/[0.04] border border-white/10 rounded-full px-2 py-1.5 overflow-x-auto no-scrollbar">
+                <a href="#founders" onclick="smoothScrollToSection(event, 'founders')" data-nav-section="founders" class="nav-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium text-white bg-red-600/20 border border-red-500/30 transition-all">
                     <i class="fa-solid fa-crown text-amber-400 mr-1.5 text-xs"></i><span data-i18n="nav_founders">ผู้ก่อตั้ง</span>
                 </a>
-                <a href="#about" onclick="smoothScrollToSection(event, 'about')" data-nav-section="about" class="nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+                <a href="#about" onclick="smoothScrollToSection(event, 'about')" data-nav-section="about" class="nav-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all">
                     <i class="fa-solid fa-layer-group text-red-400 mr-1.5 text-xs"></i><span data-i18n="nav_systems">ระบบงาน</span>
                 </a>
-                <a href="#video-showcase" onclick="smoothScrollToSection(event, 'video-showcase')" data-nav-section="video-showcase" class="nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+                <a href="#video-showcase" onclick="smoothScrollToSection(event, 'video-showcase')" data-nav-section="video-showcase" class="nav-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all">
                     <i class="fa-solid fa-circle-play text-red-400 mr-1.5 text-xs"></i><span data-i18n="nav_videos">ผลงานวิดีโอ</span>
                 </a>
-                <a href="#maps-showcase" onclick="smoothScrollToSection(event, 'maps-showcase')" data-nav-section="maps-showcase" class="nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all">
+                <a href="#maps-showcase" onclick="smoothScrollToSection(event, 'maps-showcase')" data-nav-section="maps-showcase" class="nav-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all">
                     <i class="fa-solid fa-gamepad text-rose-400 mr-1.5 text-xs"></i><span data-i18n="nav_maps">คลังแมพ Roblox</span>
                 </a>
             </nav>
 
             <!-- Top-Right Action Controls (Discord + Theme + Sound + TH/EN Language Switcher) -->
-            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <div class="flex items-center gap-1 sm:gap-2 shrink-0">
                 <!-- ปุ่มเข้าร่วมกลุ่ม Discord ผูกกับ https://discord.gg/mzp9pmEkp -->
                 <a id="navDiscordServerLink"
                    href="https://discord.gg/mzp9pmEkp"
@@ -77,34 +124,34 @@
                    rel="noopener noreferrer"
                    onmouseenter="playHoverSound()"
                    title="เข้าร่วมกลุ่ม Discord ของ DARKSHADOW STUDIO"
-                   class="btn-shimmer group flex items-center gap-2 px-2 sm:pl-2 sm:pr-3.5 py-1.5 rounded-xl bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/40 hover:border-[#5865F2] text-xs font-bold text-indigo-200 hover:text-white shadow-lg shadow-indigo-500/10 hover:shadow-indigo-500/35 transition-all duration-200 active:scale-95">
-                    <span class="w-7 h-7 rounded-lg bg-[#5865F2] group-hover:bg-white/20 text-white flex items-center justify-center shadow-sm transition-colors shrink-0">
-                        <i class="fa-brands fa-discord text-sm"></i>
+                   class="btn-shimmer group flex items-center gap-2 px-1.5 sm:pl-2 sm:pr-2 2xl:pr-3.5 py-1.5 rounded-xl bg-[#5865F2]/20 hover:bg-[#5865F2] border border-[#5865F2]/40 hover:border-[#5865F2] text-xs font-bold text-indigo-200 hover:text-white shadow-lg shadow-indigo-500/10 hover:shadow-indigo-500/35 transition-all duration-200 active:scale-95">
+                    <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#5865F2] group-hover:bg-white/20 text-white flex items-center justify-center shadow-sm transition-colors shrink-0">
+                        <i class="fa-brands fa-discord text-xs sm:text-sm"></i>
                     </span>
-                    <span data-i18n="join_discord" class="hidden lg:inline">เข้ากลุ่ม Discord</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform hidden lg:inline"></i>
+                    <span data-i18n="join_discord" class="hidden 2xl:inline">เข้ากลุ่ม Discord</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform hidden 2xl:inline"></i>
                 </a>
 
-                <!-- ปุ่มสลับโหมด DARK / LIGHT สุดเท่ -->
+                <!-- ปุ่มสลับโหมด DARK / LIGHT (แสดงเฉพาะไอคอนบนแถบ nav เพื่อไม่ให้เบียดกัน; จอเล็กใช้ปุ่มธีมลอยมุมซ้ายล่างแทน) -->
                 <button id="quickModeToggleBtn"
                         onclick="toggleColorMode()"
                         onmouseenter="playHoverSound()"
                         type="button"
                         title="สลับโหมดมืด / โหมดสว่าง (Dark / Light Mode)"
-                        class="btn-shimmer group flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/15 text-xs font-bold text-white transition-all active:scale-95 shadow-sm shrink-0">
+                        class="btn-shimmer group hidden sm:flex items-center gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/15 text-xs font-bold text-white transition-all active:scale-95 shadow-sm shrink-0">
                     <i id="modeToggleIcon" class="fa-solid fa-moon text-amber-400 text-xs sm:text-sm transition-transform duration-500 group-hover:rotate-12"></i>
-                    <span id="modeToggleLabel" class="hidden xl:inline text-[11px] font-extrabold tracking-wider uppercase">DARK</span>
+                    <span id="modeToggleLabel" class="hidden text-[11px] font-extrabold tracking-wider uppercase">DARK</span>
                 </button>
 
-                <!-- ปุ่มเปลี่ยนธีมสีเว็บ -->
-                <button onclick="openThemeModal()" title="เลือกธีมสีหน้าเว็บ / Choose Theme" class="btn-shimmer flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/15 text-xs font-semibold text-white transition-all active:scale-95 shadow-sm">
+                <!-- ปุ่มเปลี่ยนธีมสีเว็บ (ไอคอน + จุดสีธีม; จอเล็กใช้ปุ่มธีมลอยมุมซ้ายล่างแทน) -->
+                <button onclick="openThemeModal()" title="เลือกธีมสีหน้าเว็บ / Choose Theme" class="btn-shimmer hidden sm:flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/15 text-xs font-semibold text-white transition-all active:scale-95 shadow-sm">
                     <span id="activeThemeDot" class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shrink-0 shadow-sm" style="background: var(--theme-primary); box-shadow: 0 0 10px var(--theme-primary);"></span>
                     <i class="fa-solid fa-palette rgb-text text-xs sm:text-sm"></i>
-                    <span id="activeThemeName" data-i18n="theme_btn" class="hidden xl:inline font-bold">ธีมสีเว็บ</span>
+                    <span id="activeThemeName" data-i18n="theme_btn" class="hidden font-bold">ธีมสีเว็บ</span>
                 </button>
 
                 <!-- ปุ่มเปิด/ปิดเสียงเอฟเฟกต์ -->
-                <button onclick="toggleSoundFx()" title="เปิด/ปิด เสียงเอฟเฟกต์ UI" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all shrink-0">
+                <button onclick="toggleSoundFx()" title="เปิด/ปิด เสียงเอฟเฟกต์ UI" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all shrink-0">
                     <i id="soundIcon" class="fa-solid fa-volume-high text-red-400 text-xs sm:text-sm"></i>
                 </button>
 
@@ -114,32 +161,32 @@
                             onclick="setLanguage('th')"
                             type="button"
                             title="ภาษาไทย (Thai)"
-                            class="lang-switch-btn lang-active px-2 sm:px-2.5 py-1.5 rounded-[9px] text-[11px] sm:text-xs font-extrabold tracking-wider leading-none">
+                            class="lang-switch-btn lang-active px-1.5 sm:px-2 py-1.5 rounded-[9px] text-[11px] sm:text-xs font-extrabold tracking-wider leading-none">
                         TH
                     </button>
                     <button id="langBtnEN"
                             onclick="setLanguage('en')"
                             type="button"
                             title="English (อังกฤษ)"
-                            class="lang-switch-btn px-2 sm:px-2.5 py-1.5 rounded-[9px] text-[11px] sm:text-xs font-extrabold tracking-wider leading-none text-slate-400 hover:text-white">
+                            class="lang-switch-btn px-1.5 sm:px-2 py-1.5 rounded-[9px] text-[11px] sm:text-xs font-extrabold tracking-wider leading-none text-slate-400 hover:text-white">
                         EN
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Mobile Quick Navigation Bar (Shown on Mobile Screens < 768px) -->
-        <div class="md:hidden border-t border-white/10 bg-[#070306]/95 px-3 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-            <a href="#founders" onclick="smoothScrollToSection(event, 'founders')" data-nav-section="founders" class="nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-white bg-red-600/20 border border-red-500/30 transition-all flex items-center gap-1">
+        <!-- Quick Navigation Bar (Shown below 1280px, horizontally scrollable) -->
+        <div class="xl:hidden border-t border-white/10 bg-[#070306]/95 px-3 sm:px-6 py-1.5 flex items-center gap-2 overflow-x-auto no-scrollbar">
+            <a href="#founders" onclick="smoothScrollToSection(event, 'founders')" data-nav-section="founders" class="nav-pill shrink-0 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-white bg-red-600/20 border border-red-500/30 transition-all flex items-center gap-1.5">
                 <i class="fa-solid fa-crown text-amber-400 text-[10px]"></i><span data-i18n="nav_founders">ผู้ก่อตั้ง</span>
             </a>
-            <a href="#about" onclick="smoothScrollToSection(event, 'about')" data-nav-section="about" class="nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1">
+            <a href="#about" onclick="smoothScrollToSection(event, 'about')" data-nav-section="about" class="nav-pill shrink-0 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1.5">
                 <i class="fa-solid fa-layer-group text-red-400 text-[10px]"></i><span data-i18n="nav_systems">ระบบงาน</span>
             </a>
-            <a href="#video-showcase" onclick="smoothScrollToSection(event, 'video-showcase')" data-nav-section="video-showcase" class="nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1">
+            <a href="#video-showcase" onclick="smoothScrollToSection(event, 'video-showcase')" data-nav-section="video-showcase" class="nav-pill shrink-0 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1.5">
                 <i class="fa-solid fa-circle-play text-red-400 text-[10px]"></i><span data-i18n="nav_videos">ผลงานวิดีโอ</span>
             </a>
-            <a href="#maps-showcase" onclick="smoothScrollToSection(event, 'maps-showcase')" data-nav-section="maps-showcase" class="nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1">
+            <a href="#maps-showcase" onclick="smoothScrollToSection(event, 'maps-showcase')" data-nav-section="maps-showcase" class="nav-pill shrink-0 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1.5">
                 <i class="fa-solid fa-gamepad text-rose-400 text-[10px]"></i><span data-i18n="nav_maps">คลังแมพ Roblox</span>
             </a>
         </div>

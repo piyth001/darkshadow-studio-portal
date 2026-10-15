@@ -1375,15 +1375,15 @@ function smoothGlideToTop() {
 function updateActiveNavPills(activeSectionId) {
     document.querySelectorAll('.nav-pill').forEach(pill => {
         const target = pill.getAttribute('data-nav-section');
-        const isMobilePill = pill.classList.contains('shrink-0');
+        const isCompactPill = pill.classList.contains('shrink-0');
         if (target === activeSectionId) {
-            pill.className = isMobilePill
-                ? 'nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-white bg-red-600/20 border border-red-500/30 transition-all flex items-center gap-1'
-                : 'nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-white bg-red-600/20 border border-red-500/30 transition-all';
+            pill.className = isCompactPill
+                ? 'nav-pill shrink-0 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-white bg-red-600/20 border border-red-500/30 transition-all flex items-center gap-1.5'
+                : 'nav-pill px-3 py-1.5 rounded-full text-xs font-medium text-white bg-red-600/20 border border-red-500/30 transition-all';
         } else {
-            pill.className = isMobilePill
-                ? 'nav-pill shrink-0 px-3 py-1 rounded-full text-[11px] font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1'
-                : 'nav-pill px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all';
+            pill.className = isCompactPill
+                ? 'nav-pill shrink-0 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white border border-transparent transition-all flex items-center gap-1.5'
+                : 'nav-pill px-3 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent transition-all';
         }
     });
 }
@@ -1748,6 +1748,130 @@ function initParticles() {
     animateParticles();
 }
 
+// =========================================================================
+// หน้าโหลดเริ่มต้น (Boot Sequence Preloader)
+// =========================================================================
+const BOOT_STATUS_MESSAGES = [
+    'INITIALIZING DARKSHADOW CORE',
+    'LINKING DISCORD GATEWAY',
+    'SYNCING ROBLOX PROFILES',
+    'CALIBRATING PARTICLE ENGINE',
+    'ACCESS GRANTED'
+];
+
+function initBootPreloader() {
+    const preloader = document.getElementById('bootPreloader');
+    if (!preloader) {
+        document.documentElement.classList.remove('boot-locked');
+        return;
+    }
+
+    const fillBar = document.getElementById('bootProgressFill');
+    const percentLabel = document.getElementById('bootProgressPercent');
+    const statusLabel = document.getElementById('bootStatusText');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const minVisibleMs = reduceMotion ? 400 : 1500;
+    const statusIntervalMs = reduceMotion ? 180 : 480;
+    const startedAt = performance.now();
+    const initialScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+
+    let progress = 0;
+    let target = 0;
+    let statusIndex = 0;
+    let frameId = null;
+    let statusTimer = null;
+    let isFinishing = false;
+    let isReleased = false;
+
+    const renderProgress = () => {
+        if (fillBar) fillBar.style.width = `${progress}%`;
+        if (percentLabel) percentLabel.textContent = `${String(Math.round(progress)).padStart(3, '0')}%`;
+    };
+
+    const animateProgress = () => {
+        frameId = null;
+        const gap = target - progress;
+        if (Math.abs(gap) < 0.4) {
+            progress = target;
+            renderProgress();
+            return;
+        }
+        progress += gap * 0.09;
+        renderProgress();
+        frameId = requestAnimationFrame(animateProgress);
+    };
+
+    const setProgressTarget = (value) => {
+        target = Math.max(target, Math.min(100, value));
+        if (frameId === null) frameId = requestAnimationFrame(animateProgress);
+    };
+
+    const advanceStatus = () => {
+        statusIndex = Math.min(statusIndex + 1, BOOT_STATUS_MESSAGES.length - 2);
+        if (statusLabel) statusLabel.textContent = BOOT_STATUS_MESSAGES[statusIndex];
+    };
+
+    const releasePreloader = () => {
+        if (isReleased) return;
+        isReleased = true;
+
+        document.documentElement.classList.remove('boot-locked');
+        if (initialScrollY > 0) {
+            window.scrollTo(0, initialScrollY);
+            window.dispatchEvent(new Event('scroll'));
+        }
+
+        preloader.classList.add('is-dismissing');
+        window.setTimeout(() => preloader.remove(), reduceMotion ? 400 : 950);
+    };
+
+    const finishBoot = () => {
+        if (isFinishing) return;
+        isFinishing = true;
+
+        window.clearInterval(statusTimer);
+        statusTimer = null;
+        if (statusLabel) statusLabel.textContent = BOOT_STATUS_MESSAGES[BOOT_STATUS_MESSAGES.length - 1];
+        setProgressTarget(100);
+
+        const remainingMs = Math.max(0, minVisibleMs - (performance.now() - startedAt));
+        window.setTimeout(releasePreloader, remainingMs + (reduceMotion ? 0 : 350));
+    };
+
+    let assetsLoaded = document.readyState === 'complete';
+    let fontsReady = !document.fonts;
+    const finishWhenReady = () => {
+        if (assetsLoaded && fontsReady) finishBoot();
+    };
+
+    setProgressTarget(reduceMotion ? 100 : 92);
+    renderProgress();
+    statusTimer = window.setInterval(advanceStatus, statusIntervalMs);
+
+    if (assetsLoaded) {
+        finishWhenReady();
+    } else {
+        window.addEventListener('load', () => {
+            assetsLoaded = true;
+            finishWhenReady();
+        }, { once: true });
+    }
+
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+            fontsReady = true;
+            finishWhenReady();
+        }).catch(() => {
+            fontsReady = true;
+            finishWhenReady();
+        });
+    }
+
+    // Safety net: don't keep the page covered if a request stalls.
+    window.setTimeout(finishBoot, 8000);
+}
+
 function initCursorSpotlight() {
     // The spotlight element is the only consumer of these custom properties. Writing
     // them there instead of on <html> keeps the style invalidation off the other 700
@@ -1780,6 +1904,7 @@ window.addEventListener('DOMContentLoaded', () => {
     loadSavedTheme();
     loadSavedState();
     loadSavedLanguage();
+    initBootPreloader();
     initTiltCards();
     initCursorSpotlight();
     initParticles();
