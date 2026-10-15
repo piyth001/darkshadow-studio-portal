@@ -7,7 +7,7 @@
 // =========================================================================
 // ลิงก์กลุ่ม Discord หลักของ DARKSHADOW STUDIO
 // =========================================================================
-const DISCORD_SERVER_INVITE_URL = 'https://discord.gg/mzp9pmEkp';
+const DISCORD_SERVER_INVITE_URL = 'https://discord.gg/XxXrEUKfn';
 
 const STORAGE_KEY = 'darkshadow_studio_profiles_v4';
 const THEME_STORAGE_KEY = 'darkshadow_studio_theme_v2';
